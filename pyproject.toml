@@ -1,7 +1,9 @@
 [project]
 name = "discover-plugins"
 dynamic = ["version"]
+description = "Discover installed plugins"
 requires-python = ">=3.9"
+readme = "README.md"
 authors = [
   { name = "Felix Scherz", email = "felixwscherz@gmail.com" },
 ]
