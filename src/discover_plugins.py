@@ -1,4 +1,5 @@
 import argparse
+import inspect
 import json
 import subprocess
 import sys
@@ -31,8 +32,6 @@ def discover(name: str | None = None, value: str | None = None, group: str | Non
 
 
 def source_file():
-    import inspect
-
     this = sys.modules[__name__]
     return inspect.getsourcefile(this)
 
