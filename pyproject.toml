@@ -21,3 +21,6 @@ build-backend = "setuptools.build_meta"
 Documentation = "https://github.com/felixscherz/discover-plugins#readme"
 Issues = "https://github.com/felixscherz/discover-plugins/issues"
 Source = "https://github.com/felixscherz/discover-plugins"
+
+[project.scripts]
+discover-plugins = "discover_plugins:inject"
