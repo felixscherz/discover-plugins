@@ -42,7 +42,7 @@ def inject():
     parser.add_argument("--name")
     parser.add_argument("--value")
     parser.add_argument("--group")
-    parser.add_argument("--interpreter")
+    parser.add_argument("--interpreter", default="python")
 
     options = parser.parse_args()
 
