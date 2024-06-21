@@ -1,7 +1,8 @@
 import argparse
-import sys
+import json
 import subprocess
-
+import sys
+from importlib.metadata import EntryPoints
 from importlib.metadata import entry_points
 
 
@@ -12,7 +13,9 @@ def main():
     parser.add_argument("--group")
 
     options = parser.parse_args()
-    print(discover(name=options.name, value=options.value, group=options.group))
+    eps = discover(name=options.name, value=options.value, group=options.group)
+    print(json.dumps(entrypoints_to_dict(eps)))
+    raise SystemExit(0)
 
 
 def discover(name: str | None = None, value: str | None = None, group: str | None = None):
@@ -26,11 +29,13 @@ def discover(name: str | None = None, value: str | None = None, group: str | Non
     eps = entry_points(**kwargs)
     return eps
 
-def source():
+
+def source_file():
     import inspect
+
     this = sys.modules[__name__]
-    code = inspect.getsource(this)
-    return code
+    return inspect.getsourcefile(this)
+
 
 def inject():
     parser = argparse.ArgumentParser()
@@ -39,15 +44,28 @@ def inject():
     parser.add_argument("--group")
     parser.add_argument("--interpreter")
 
-
     options = parser.parse_args()
-    if options.interpreter:
-        code = source()
-        stdout = subprocess.run([options.interpreter, "-c", code])
-        print(stdout.stdout)
-        raise SystemExit(stdout.returncode)
 
-    print(discover(name=options.name, value=options.value, group=options.group))
+    code = source_file()
+    cmd = [options.interpreter, code]
+    if options.group:
+        cmd.extend(["--group", options.group])
+    if options.value:
+        cmd.extend(["--value", options.value])
+    if options.name:
+        cmd.extend(["--name", options.name])
+    if options.interpreter:
+        out = subprocess.run(cmd, stdout=subprocess.PIPE)
+        print(out.stdout.decode())
+        raise SystemExit(out.returncode)
+
+    eps = discover(name=options.name, value=options.value, group=options.group)
+    print(json.dumps(entrypoints_to_dict(eps)))
+
+
+def entrypoints_to_dict(eps: EntryPoints) -> dict:
+    return {g: [dict(name=e.name, group=e.group, value=e.value) for e in eps.select(group=g)] for g in eps.groups}
+
 
 if __name__ == "__main__":
     main()

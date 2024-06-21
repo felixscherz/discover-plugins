@@ -12,5 +12,5 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
-[project.entry-points.myplugin]
-plugin = "myplugin"
+[project.entry-points."entry_point_name"]
+name = "myplugin:main"
