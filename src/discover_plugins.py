@@ -6,14 +6,20 @@ import sys
 from importlib.metadata import EntryPoints
 from importlib.metadata import entry_points
 
+import logging
+
+logger = logging.getLogger("discover-plugins")
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name")
     parser.add_argument("--value")
     parser.add_argument("--group")
+    parser.add_argument("--verbose", "-v", action="store_true")
 
     options = parser.parse_args()
+    if options.verbose:
+        logging.basicConfig(stream=sys.stderr, level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
     eps = discover(name=options.name, value=options.value, group=options.group)
     print(json.dumps(entrypoints_to_dict(eps)))
     raise SystemExit(0)
@@ -27,6 +33,7 @@ def discover(name: str | None = None, value: str | None = None, group: str | Non
         kwargs.update(value=value)
     if group:
         kwargs.update(group=group)
+    logger.debug("discovering plugins for interpreter %s", sys.executable)
     eps = entry_points(**kwargs)
     return eps
 
