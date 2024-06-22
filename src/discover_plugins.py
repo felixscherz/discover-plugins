@@ -10,6 +10,7 @@ import logging
 
 logger = logging.getLogger("discover-plugins")
 
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name")
@@ -19,13 +20,19 @@ def main():
 
     options = parser.parse_args()
     if options.verbose:
-        logging.basicConfig(stream=sys.stderr, level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        logging.basicConfig(
+            stream=sys.stderr,
+            level=logging.DEBUG,
+            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        )
     eps = discover(name=options.name, value=options.value, group=options.group)
     print(json.dumps(entrypoints_to_dict(eps)))
     raise SystemExit(0)
 
 
-def discover(name: str | None = None, value: str | None = None, group: str | None = None):
+def discover(
+    name: str | None = None, value: str | None = None, group: str | None = None
+):
     kwargs = {}
     if name:
         kwargs.update(name=name)
@@ -73,7 +80,12 @@ def inject():
 
 
 def entrypoints_to_dict(eps: EntryPoints) -> dict:
-    return {g: [dict(name=e.name, group=e.group, value=e.value) for e in eps.select(group=g)] for g in eps.groups}
+    return {
+        g: [
+            dict(name=e.name, group=e.group, value=e.value) for e in eps.select(group=g)
+        ]
+        for g in eps.groups
+    }
 
 
 if __name__ == "__main__":

@@ -17,22 +17,37 @@ def interpreter(tmp_path):
 
 
 def test_discover_plugins_returns_valid_json(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
-    out = subprocess.run(["discover-plugins", "--interpreter", interpreter], stdout=subprocess.PIPE)
+    out = subprocess.run(
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
+    out = subprocess.run(
+        ["discover-plugins", "--interpreter", interpreter], stdout=subprocess.PIPE
+    )
     json.loads(out.stdout)
     assert out.returncode == 0
 
 
 def test_discover_plugins_for_specified_interpreter(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
+    out = subprocess.run(
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
     out = subprocess.run(["discover-plugins", "--interpreter", interpreter])
     assert out.returncode == 0
 
 
 def test_discover_plugins_for_selected_groups(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
     out = subprocess.run(
-        ["discover-plugins", "--interpreter", interpreter, "--group", "entry_point_name"], stdout=subprocess.PIPE
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
+    out = subprocess.run(
+        [
+            "discover-plugins",
+            "--interpreter",
+            interpreter,
+            "--group",
+            "entry_point_name",
+        ],
+        stdout=subprocess.PIPE,
     )
     eps = json.loads(out.stdout)
     assert "entry_point_name" in eps
@@ -41,8 +56,13 @@ def test_discover_plugins_for_selected_groups(interpreter):
 
 
 def test_discover_plugins_for_selected_name(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
-    out = subprocess.run(["discover-plugins", "--interpreter", interpreter, "--name", "name"], stdout=subprocess.PIPE)
+    out = subprocess.run(
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
+    out = subprocess.run(
+        ["discover-plugins", "--interpreter", interpreter, "--name", "name"],
+        stdout=subprocess.PIPE,
+    )
     eps = json.loads(out.stdout)
     assert "entry_point_name" in eps
     assert len(eps) == 1
@@ -50,9 +70,12 @@ def test_discover_plugins_for_selected_name(interpreter):
 
 
 def test_discover_plugins_for_selected_value(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
     out = subprocess.run(
-        ["discover-plugins", "--interpreter", interpreter, "--value", "myplugin:main"], stdout=subprocess.PIPE
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
+    out = subprocess.run(
+        ["discover-plugins", "--interpreter", interpreter, "--value", "myplugin:main"],
+        stdout=subprocess.PIPE,
     )
     eps = json.loads(out.stdout)
     assert "entry_point_name" in eps
@@ -61,10 +84,20 @@ def test_discover_plugins_for_selected_value(interpreter):
 
 
 def test_discover_plugins_in_verbose_mode_specifies_interpreter(interpreter):
-    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
     out = subprocess.run(
-        ["discover-plugins", "--interpreter", interpreter, "--value", "myplugin:main", "--verbose"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        [interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"]
+    )
+    out = subprocess.run(
+        [
+            "discover-plugins",
+            "--interpreter",
+            interpreter,
+            "--value",
+            "myplugin:main",
+            "--verbose",
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
     )
     assert interpreter.as_posix() in out.stderr.decode()
 
