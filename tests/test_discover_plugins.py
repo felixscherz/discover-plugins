@@ -60,6 +60,15 @@ def test_discover_plugins_for_selected_value(interpreter):
     assert len(eps["entry_point_name"]) == 1
 
 
+def test_discover_plugins_in_verbose_mode_specifies_interpreter(interpreter):
+    out = subprocess.run([interpreter, "-m", "pip", "install", "./testdata/packages/myplugin"])
+    out = subprocess.run(
+        ["discover-plugins", "--interpreter", interpreter, "--value", "myplugin:main", "--verbose"],
+        stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
+    assert interpreter.as_posix() in out.stderr.decode()
+
+
 def test_entrypoints_conversion_can_be_json_encoded():
     eps = entry_points()
     d = entrypoints_to_dict(eps)

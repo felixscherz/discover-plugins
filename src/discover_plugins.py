@@ -49,6 +49,7 @@ def inject():
     parser.add_argument("--value")
     parser.add_argument("--group")
     parser.add_argument("--interpreter", default="python")
+    parser.add_argument("--verbose", "-v", action="store_true", default=False)
 
     options = parser.parse_args()
 
@@ -60,6 +61,8 @@ def inject():
         cmd.extend(["--value", options.value])
     if options.name:
         cmd.extend(["--name", options.name])
+    if options.verbose:
+        cmd.append("--verbose")
     if options.interpreter:
         out = subprocess.run(cmd, stdout=subprocess.PIPE)
         print(out.stdout.decode())
