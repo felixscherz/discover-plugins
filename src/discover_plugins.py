@@ -1,12 +1,11 @@
 import argparse
 import inspect
 import json
+import logging
 import subprocess
 import sys
 from importlib.metadata import EntryPoints
 from importlib.metadata import entry_points
-
-import logging
 
 logger = logging.getLogger("discover-plugins")
 
@@ -51,11 +50,17 @@ def source_file():
 
 
 def inject():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--name")
-    parser.add_argument("--value")
-    parser.add_argument("--group")
-    parser.add_argument("--interpreter", default="python")
+    parser = argparse.ArgumentParser(
+        description="Discover entrypoints available for different python environments."
+    )
+    parser.add_argument("--name", help="filter entrypoints by name")
+    parser.add_argument("--value", help="filter entrypoint by value")
+    parser.add_argument("--group", help="filter entrypoints by group")
+    parser.add_argument(
+        "--interpreter",
+        default="python",
+        help="specify the python interpreter to use. Defaults to first python executable on PATH",
+    )
     parser.add_argument("--verbose", "-v", action="store_true", default=False)
 
     options = parser.parse_args()
