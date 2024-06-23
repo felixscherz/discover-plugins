@@ -1,7 +1,7 @@
 [project]
 name = "discover-plugins"
 dynamic = ["version"]
-description = "Discover installed plugins"
+description = "discover entrypoints for different python environments"
 requires-python = ">=3.10"
 readme = "README.md"
 authors = [
